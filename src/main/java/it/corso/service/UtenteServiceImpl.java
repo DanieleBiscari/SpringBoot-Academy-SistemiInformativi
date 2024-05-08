@@ -14,6 +14,7 @@ import it.corso.dao.UtenteDao;
 import it.corso.dto.UtenteAggiornamentoDto;
 import it.corso.dto.UtenteAggiornamentoProvaDto;
 import it.corso.dto.UtenteDto;
+import it.corso.dto.UtenteEliminazioneDto;
 import it.corso.dto.UtenteIscrizioneCorsoDto;
 import it.corso.dto.UtenteLoginRequestDto;
 import it.corso.dto.UtenteRegistrazioneDto;
@@ -65,22 +66,32 @@ public class UtenteServiceImpl implements UtenteService {
 
 	// UPDATE
 	@Override
-	public void aggiornaUtente(String email, UtenteAggiornamentoDto utenteDto) {
-		Utente utente = utenteDao.findByEmail(email);
+	public void aggiornaUtente(UtenteAggiornamentoDto utenteDto) {
+		Utente utente = utenteDao.findByEmail(utenteDto.getEmail());
 		
 		if (utente != null) { 
 			utente.setNome(utenteDto.getNome());
 			utente.setCognome(utenteDto.getCognome());
 			utente.setEmail(utenteDto.getEmail());
 			List<Ruolo> ruoliUtente = new ArrayList<>();
-			Optional<Ruolo> ruoloDb = ruoloDao.findById(utenteDto.getIdRuolo());
-			if(ruoloDb.isPresent()) {
-				Ruolo ruolo = ruoloDb.get();
-				// ruolo.setId(utenteDto.getIdRuolo());
-				ruoliUtente.add(ruolo);
-				utente.setRuoli(ruoliUtente);
-			}
 			
+			for(Integer idRuolo: utenteDto.getIdRuoli()) {
+				Optional<Ruolo> ruoloDb = ruoloDao.findById(idRuolo);
+				if(ruoloDb.isPresent()) {
+					Ruolo newRuolo = ruoloDb.get();
+					ruoliUtente.add(newRuolo);
+				}
+			}
+			utente.setRuoli(ruoliUtente);
+			
+//			Optional<Ruolo> ruoloDb = ruoloDao.findById(utenteDto.getIdRuolo());
+//			if(ruoloDb.isPresent()) {
+//				Ruolo ruolo = ruoloDb.get();
+//				// ruolo.setId(utenteDto.getIdRuolo());
+//				ruoliUtente.add(ruolo);
+//				utente.setRuoli(ruoliUtente);
+//			}
+//			
 			
 			utenteDao.save(utente);
 		}
@@ -112,8 +123,8 @@ public class UtenteServiceImpl implements UtenteService {
 
 	// DELETE
 	@Override
-	public void eliminazioneUtenteDaEmail(String email) {
-		Utente utente = utenteDao.findByEmail(email);
+	public void eliminazioneUtenteDaEmail(UtenteEliminazioneDto utenteDto) {
+		Utente utente = utenteDao.findByEmail(utenteDto.getEmail());
 		Optional<Utente> utenteOptional = utenteDao.findById(utente.getId());
 		if (utenteOptional.isPresent()) {
 			utenteDao.delete(utenteOptional.get());

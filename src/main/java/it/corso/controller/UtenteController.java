@@ -15,6 +15,7 @@ import io.jsonwebtoken.security.Keys;
 import it.corso.dto.UtenteAggiornamentoDto;
 import it.corso.dto.UtenteAggiornamentoProvaDto;
 import it.corso.dto.UtenteDto;
+import it.corso.dto.UtenteEliminazioneDto;
 import it.corso.dto.UtenteIscrizioneCorsoDto;
 import it.corso.dto.UtenteLoginRequestDto;
 import it.corso.dto.UtenteLoginResponseDto;
@@ -73,10 +74,10 @@ public class UtenteController {
 	}
 
 	@DELETE
-	@Path("/elimina/{email}")
-	public Response eliminaUtente(@PathParam("email") String email) {
+	@Path("/elimina")
+	public Response eliminaUtente(@RequestBody UtenteEliminazioneDto utenteDto) {
 		try {
-			utenteService.eliminazioneUtenteDaEmail(email);
+			utenteService.eliminazioneUtenteDaEmail(utenteDto);
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -107,10 +108,9 @@ public class UtenteController {
 
 	@PUT
 	@Path("/aggiorna")
-	public Response aggiornaUtente(@Valid @RequestBody @QueryParam("email") String email,
-			UtenteAggiornamentoDto utenteDto) {
+	public Response aggiornaUtente(@Valid UtenteAggiornamentoDto utenteDto) {
 		try {
-			utenteService.aggiornaUtente(email, utenteDto);
+			utenteService.aggiornaUtente(utenteDto);
 			return Response.status(Response.Status.OK).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -130,6 +130,8 @@ public class UtenteController {
 
 	}
 
+	@Secured(role = "Admin")
+	@JWTTokenNedeed
 	@GET
 	@Path("/getUtenti")
 	@Produces(MediaType.APPLICATION_JSON)

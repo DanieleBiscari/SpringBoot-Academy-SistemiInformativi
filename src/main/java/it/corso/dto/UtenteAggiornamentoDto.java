@@ -1,5 +1,7 @@
 package it.corso.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.Pattern;
 
 public class UtenteAggiornamentoDto {
@@ -11,14 +13,16 @@ public class UtenteAggiornamentoDto {
 	private String email;
 	// in questo caso non dichiarando una lista di ruoli in input potremmo assegnare
 	// solamente un ruolo per utente
-	private int idRuolo;
-
-	public int getIdRuolo() {
-		return idRuolo;
+	private List<Integer> idRuoli;
+	
+	
+	
+	public List<Integer> getIdRuoli() {
+		return idRuoli;
 	}
 
-	public void setIdRuolo(int idRuolo) {
-		this.idRuolo = idRuolo;
+	public void setIdRuoli(List<Integer> idRuoli) {
+		this.idRuoli = idRuoli;
 	}
 
 	public String getNome() {

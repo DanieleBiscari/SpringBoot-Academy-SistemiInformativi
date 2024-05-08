@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.corso.dao.CorsoDao;
+import it.corso.dto.CorsoCreazioneDto;
 import it.corso.dto.CorsoDto;
 import it.corso.model.Corso;
 
@@ -25,5 +26,15 @@ public class CorsoServiceImpl implements CorsoService {
 		corso.forEach(c -> corsoDto.add(modelMapper.map(c, CorsoDto.class)));
 		
 		return corsoDto;
+	}
+
+	@Override
+	public void createCourse(CorsoCreazioneDto corsoDto) {
+		Corso corso = new Corso();
+		corso.setNomeCorso(corsoDto.getNomeCorso());
+		corso.setDescrizioneBreve(corsoDto.getDescrizioneBreve());
+		corso.setDescrizioneCompleta(corsoDto.getDescrizioneCompleta());
+		corso.setDurata(corsoDto.getDurata());
+		corsoDao.save(corso);	
 	}
 }
